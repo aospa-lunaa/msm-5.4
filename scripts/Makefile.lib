@@ -326,14 +326,8 @@ cmd_cat = (cat $(filter-out FORCE,$^) > $@) || (rm -f $@; false)
 
 # mkdtboimg
 #----------------------------------------------------------------------------
-ifneq ($(MKDTBO_EXT),)
-MKDTBO = $(MKDTBO_EXT)
-else
-MKDTBO = $(srctree)/scripts/mkdtboimg.py
-endif
-
 quiet_cmd_mkdtboimg = DTBOIMG $@
-cmd_mkdtboimg = $(PYTHON3) $(MKDTBO) create $@ \
+cmd_mkdtboimg = $(PYTHON3) $(srctree)/scripts/mkdtboimg.py create $@ \
 	--page_size=4096 $(filter-out FORCE,$^)
 
 # Bzip2
