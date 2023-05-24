@@ -3054,6 +3054,7 @@ int init_touchpanel_proc(struct touchpanel_data *ts)
 	int ret = 0;
 	int i = 0;
 	struct proc_dir_entry *prEntry_tp = NULL;
+	char sysfs_path[128], *__sysfs_path;
 	char name[TP_NAME_SIZE_MAX];
 
 	tp_proc_node tp_proc_node[] = {
@@ -3229,6 +3230,18 @@ int init_touchpanel_proc(struct touchpanel_data *ts)
 
 	/*create debug_info node*/
 	init_debug_info_proc(ts);
+
+	// Create a symlink of /sys i2c path to procfs for easy lookup
+	__sysfs_path = kobject_get_path(&ts->client->dev.kobj, GFP_KERNEL);
+	if (__sysfs_path == NULL) {
+		TPD_INFO("%s: Couldn't resolve sysfs path, %d\n", __func__, __LINE__);
+	} else {
+		sprintf(sysfs_path, "/sys%s", __sysfs_path);
+		kfree(__sysfs_path);
+		prEntry_tmp = proc_symlink("i2c", prEntry_tp, sysfs_path);
+		if (prEntry_tmp == NULL)
+			TPD_INFO("%s: Couldn't create proc symlink, %d\n", __func__, __LINE__);
+	}
 
 	return ret;
 }
