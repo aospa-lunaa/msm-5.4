@@ -853,6 +853,8 @@ struct touchpanel_data {
 	struct iio_channel *skin_therm_chan;
 	struct hrtimer		temp_timer;
 	struct work_struct get_temperature_work;
+	struct delayed_work report_single_tap_work;
+	struct wakeup_source single_tap_pm;
 
 	/******For fb notify area********/
 	struct work_struct     speed_up_work;               /*using for speedup resume*/
